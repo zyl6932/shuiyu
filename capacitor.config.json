@@ -1,0 +1,8 @@
+{
+  "appId": "com.shuiyu.app",
+  "appName": "睡阈",
+  "webDir": "www",
+  "android": {
+    "allowMixedContent": true
+  }
+}

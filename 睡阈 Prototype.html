@@ -1,0 +1,1176 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>睡阈 · 原型</title>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script type="text/babel" data-presets="react">
+// iOS.jsx — Simplified iOS 26 (Liquid Glass) device frame
+// Based on the iOS 26 UI Kit + Figma status bar spec. No assets, no deps.
+// Exports: IOSDevice, IOSStatusBar, IOSNavBar, IOSGlassPill, IOSList, IOSListRow, IOSKeyboard
+
+function IOSStatusBar({ dark = false, time = '9:41' }) {
+  const c = dark ? '#fff' : '#000';
+  return (
+    <div style={{
+      display: 'flex', gap: 154, alignItems: 'center', justifyContent: 'center',
+      padding: '21px 24px 19px', boxSizing: 'border-box',
+      position: 'relative', zIndex: 20, width: '100%',
+    }}>
+      <div style={{ flex: 1, height: 22, display: 'flex', alignItems: 'center', justifyContent: 'center', paddingTop: 1.5 }}>
+        <span style={{
+          fontFamily: '-apple-system, "SF Pro", system-ui', fontWeight: 590,
+          fontSize: 17, lineHeight: '22px', color: c,
+        }}>{time}</span>
+      </div>
+      <div style={{ flex: 1, height: 22, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, paddingTop: 1, paddingRight: 1 }}>
+        <svg width="19" height="12" viewBox="0 0 19 12">
+          <rect x="0" y="7.5" width="3.2" height="4.5" rx="0.7" fill={c}/>
+          <rect x="4.8" y="5" width="3.2" height="7" rx="0.7" fill={c}/>
+          <rect x="9.6" y="2.5" width="3.2" height="9.5" rx="0.7" fill={c}/>
+          <rect x="14.4" y="0" width="3.2" height="12" rx="0.7" fill={c}/>
+        </svg>
+        <svg width="17" height="12" viewBox="0 0 17 12">
+          <path d="M8.5 3.2C10.8 3.2 12.9 4.1 14.4 5.6L15.5 4.5C13.7 2.7 11.2 1.5 8.5 1.5C5.8 1.5 3.3 2.7 1.5 4.5L2.6 5.6C4.1 4.1 6.2 3.2 8.5 3.2Z" fill={c}/>
+          <path d="M8.5 6.8C9.9 6.8 11.1 7.3 12 8.2L13.1 7.1C11.8 5.9 10.2 5.1 8.5 5.1C6.8 5.1 5.2 5.9 3.9 7.1L5 8.2C5.9 7.3 7.1 6.8 8.5 6.8Z" fill={c}/>
+          <circle cx="8.5" cy="10.5" r="1.5" fill={c}/>
+        </svg>
+        <svg width="27" height="13" viewBox="0 0 27 13">
+          <rect x="0.5" y="0.5" width="23" height="12" rx="3.5" stroke={c} strokeOpacity="0.35" fill="none"/>
+          <rect x="2" y="2" width="20" height="9" rx="2" fill={c}/>
+          <path d="M25 4.5V8.5C25.8 8.2 26.5 7.2 26.5 6.5C26.5 5.8 25.8 4.8 25 4.5Z" fill={c} fillOpacity="0.4"/>
+        </svg>
+      </div>
+    </div>
+  );
+}
+
+function IOSGlassPill({ children, dark = false, style = {} }) {
+  return (
+    <div style={{
+      height: 44, minWidth: 44, borderRadius: 9999,
+      position: 'relative', overflow: 'hidden',
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      boxShadow: dark
+        ? '0 2px 6px rgba(0,0,0,0.35), 0 6px 16px rgba(0,0,0,0.2)'
+        : '0 1px 3px rgba(0,0,0,0.07), 0 3px 10px rgba(0,0,0,0.06)',
+      ...style,
+    }}>
+      <div style={{
+        position: 'absolute', inset: 0, borderRadius: 9999,
+        backdropFilter: 'blur(12px) saturate(180%)',
+        WebkitBackdropFilter: 'blur(12px) saturate(180%)',
+        background: dark ? 'rgba(120,120,128,0.28)' : 'rgba(255,255,255,0.5)',
+      }} />
+      <div style={{
+        position: 'absolute', inset: 0, borderRadius: 9999,
+        boxShadow: dark
+          ? 'inset 1.5px 1.5px 1px rgba(255,255,255,0.15), inset -1px -1px 1px rgba(255,255,255,0.08)'
+          : 'inset 1.5px 1.5px 1px rgba(255,255,255,0.7), inset -1px -1px 1px rgba(255,255,255,0.4)',
+        border: dark ? '0.5px solid rgba(255,255,255,0.15)' : '0.5px solid rgba(0,0,0,0.06)',
+      }} />
+      <div style={{ position: 'relative', zIndex: 1, display: 'flex', alignItems: 'center', padding: '0 4px' }}>
+        {children}
+      </div>
+    </div>
+  );
+}
+
+function IOSNavBar({ title = 'Title', dark = false, trailingIcon = true }) {
+  const muted = dark ? 'rgba(255,255,255,0.6)' : '#404040';
+  const text = dark ? '#fff' : '#000';
+  const pillIcon = (content) => (
+    <IOSGlassPill dark={dark}>
+      <div style={{ width: 36, height: 36, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        {content}
+      </div>
+    </IOSGlassPill>
+  );
+  return (
+    <div style={{
+      display: 'flex', flexDirection: 'column', gap: 10,
+      paddingTop: 62, paddingBottom: 10, position: 'relative', zIndex: 5,
+    }}>
+      <div style={{
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        padding: '0 16px',
+      }}>
+        {pillIcon(
+          <svg width="12" height="20" viewBox="0 0 12 20" fill="none" style={{ marginLeft: -1 }}>
+            <path d="M10 2L2 10l8 8" stroke={muted} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        )}
+        {trailingIcon && pillIcon(
+          <svg width="22" height="6" viewBox="0 0 22 6">
+            <circle cx="3" cy="3" r="2.5" fill={muted}/>
+            <circle cx="11" cy="3" r="2.5" fill={muted}/>
+            <circle cx="19" cy="3" r="2.5" fill={muted}/>
+          </svg>
+        )}
+      </div>
+      <div style={{
+        padding: '0 16px',
+        fontFamily: '-apple-system, system-ui',
+        fontSize: 34, fontWeight: 700, lineHeight: '41px',
+        color: text, letterSpacing: 0.4,
+      }}>{title}</div>
+    </div>
+  );
+}
+
+function IOSListRow({ title, detail, icon, chevron = true, isLast = false, dark = false }) {
+  const text = dark ? '#fff' : '#000';
+  const sec = dark ? 'rgba(235,235,245,0.6)' : 'rgba(60,60,67,0.6)';
+  const ter = dark ? 'rgba(235,235,245,0.3)' : 'rgba(60,60,67,0.3)';
+  const sep = dark ? 'rgba(84,84,88,0.65)' : 'rgba(60,60,67,0.12)';
+  return (
+    <div style={{
+      display: 'flex', alignItems: 'center', minHeight: 52,
+      padding: '0 16px', position: 'relative',
+      fontFamily: '-apple-system, system-ui', fontSize: 17,
+      letterSpacing: -0.43,
+    }}>
+      {icon && (
+        <div style={{
+          width: 30, height: 30, borderRadius: 7, background: icon,
+          marginRight: 12, flexShrink: 0,
+        }} />
+      )}
+      <div style={{ flex: 1, color: text }}>{title}</div>
+      {detail && <span style={{ color: sec, marginRight: 6 }}>{detail}</span>}
+      {chevron && (
+        <svg width="8" height="14" viewBox="0 0 8 14" style={{ flexShrink: 0 }}>
+          <path d="M1 1l6 6-6 6" stroke={ter} strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+      )}
+      {!isLast && (
+        <div style={{
+          position: 'absolute', bottom: 0, right: 0,
+          left: icon ? 58 : 16, height: 0.5, background: sep,
+        }} />
+      )}
+    </div>
+  );
+}
+
+function IOSList({ header, children, dark = false }) {
+  const hc = dark ? 'rgba(235,235,245,0.6)' : 'rgba(60,60,67,0.6)';
+  const bg = dark ? '#1C1C1E' : '#fff';
+  return (
+    <div>
+      {header && (
+        <div style={{
+          fontFamily: '-apple-system, system-ui', fontSize: 13,
+          color: hc, textTransform: 'uppercase',
+          padding: '8px 36px 6px', letterSpacing: -0.08,
+        }}>{header}</div>
+      )}
+      <div style={{
+        background: bg, borderRadius: 26,
+        margin: '0 16px', overflow: 'hidden',
+      }}>{children}</div>
+    </div>
+  );
+}
+
+function IOSDevice({
+  children, width = 402, height = 874, dark = false,
+  title, keyboard = false,
+}) {
+  return (
+    <div style={{
+      width, height, borderRadius: 48, overflow: 'hidden',
+      position: 'relative', background: dark ? '#000' : '#F2F2F7',
+      boxShadow: '0 40px 80px rgba(0,0,0,0.18), 0 0 0 1px rgba(0,0,0,0.12)',
+      fontFamily: '-apple-system, system-ui, sans-serif',
+      WebkitFontSmoothing: 'antialiased',
+    }}>
+      <div style={{
+        position: 'absolute', top: 11, left: '50%', transform: 'translateX(-50%)',
+        width: 126, height: 37, borderRadius: 24, background: '#000', zIndex: 50,
+      }} />
+      <div style={{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10 }}>
+        <IOSStatusBar dark={dark} />
+      </div>
+      <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+        {title !== undefined && <IOSNavBar title={title} dark={dark} />}
+        <div style={{ flex: 1, overflow: 'auto' }}>{children}</div>
+        {keyboard && <IOSKeyboard dark={dark} />}
+      </div>
+      <div style={{
+        position: 'absolute', bottom: 0, left: 0, right: 0, zIndex: 60,
+        height: 34, display: 'flex', justifyContent: 'center', alignItems: 'flex-end',
+        paddingBottom: 8, pointerEvents: 'none',
+      }}>
+        <div style={{
+          width: 139, height: 5, borderRadius: 100,
+          background: dark ? 'rgba(255,255,255,0.7)' : 'rgba(0,0,0,0.25)',
+        }} />
+      </div>
+    </div>
+  );
+}
+
+function IOSKeyboard({ dark = false }) {
+  const glyph = dark ? 'rgba(255,255,255,0.7)' : '#595959';
+  const sugg = dark ? 'rgba(255,255,255,0.6)' : '#333';
+  const keyBg = dark ? 'rgba(255,255,255,0.22)' : 'rgba(255,255,255,0.85)';
+
+  const icons = {
+    shift: <svg width="19" height="17" viewBox="0 0 19 17"><path d="M9.5 1L1 9.5h4.5V16h8V9.5H18L9.5 1z" fill={glyph}/></svg>,
+    del: <svg width="23" height="17" viewBox="0 0 23 17"><path d="M7 1h13a2 2 0 012 2v11a2 2 0 01-2 2H7l-6-7.5L7 1z" fill="none" stroke={glyph} strokeWidth="1.6" strokeLinejoin="round"/><path d="M10 5l7 7M17 5l-7 7" stroke={glyph} strokeWidth="1.6" strokeLinecap="round"/></svg>,
+    ret: <svg width="20" height="14" viewBox="0 0 20 14"><path d="M18 1v6H4m0 0l4-4M4 7l4 4" fill="none" stroke="#fff" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>,
+  };
+
+  const key = (content, { w, flex, ret, fs = 25, k } = {}) => (
+    <div key={k} style={{
+      height: 42, borderRadius: 8.5,
+      flex: flex ? 1 : undefined, width: w, minWidth: 0,
+      background: ret ? '#08f' : keyBg,
+      boxShadow: '0 1px 0 rgba(0,0,0,0.075)',
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      fontFamily: '-apple-system, "SF Compact", system-ui',
+      fontSize: fs, fontWeight: 458, color: ret ? '#fff' : glyph,
+    }}>{content}</div>
+  );
+
+  const row = (keys, pad = 0) => (
+    <div style={{ display: 'flex', gap: 6.5, justifyContent: 'center', padding: `0 ${pad}px` }}>
+      {keys.map(l => key(l, { flex: true, k: l }))}
+    </div>
+  );
+
+  return (
+    <div style={{
+      position: 'relative', zIndex: 15, borderRadius: 27, overflow: 'hidden',
+      padding: '11px 0 2px',
+      display: 'flex', flexDirection: 'column', alignItems: 'center',
+      boxShadow: dark
+        ? '0 -2px 20px rgba(0,0,0,0.09)'
+        : '0 -1px 6px rgba(0,0,0,0.018), 0 -3px 20px rgba(0,0,0,0.012)',
+    }}>
+      <div style={{
+        position: 'absolute', inset: 0, borderRadius: 27,
+        backdropFilter: 'blur(12px) saturate(180%)',
+        WebkitBackdropFilter: 'blur(12px) saturate(180%)',
+        background: dark ? 'rgba(120,120,128,0.14)' : 'rgba(255,255,255,0.25)',
+      }} />
+      <div style={{
+        position: 'absolute', inset: 0, borderRadius: 27,
+        boxShadow: dark
+          ? 'inset 1.5px 1.5px 1px rgba(255,255,255,0.15)'
+          : 'inset 1.5px 1.5px 1px rgba(255,255,255,0.7), inset -1px -1px 1px rgba(255,255,255,0.4)',
+        border: dark ? '0.5px solid rgba(255,255,255,0.15)' : '0.5px solid rgba(0,0,0,0.06)',
+        pointerEvents: 'none',
+      }} />
+      <div style={{
+        display: 'flex', gap: 20, alignItems: 'center',
+        padding: '8px 22px 13px', width: '100%', boxSizing: 'border-box',
+        position: 'relative',
+      }}>
+        {['"The"', 'the', 'to'].map((w, i) => (
+          <React.Fragment key={i}>
+            {i > 0 && <div style={{ width: 1, height: 25, background: '#ccc', opacity: 0.3 }} />}
+            <div style={{
+              flex: 1, textAlign: 'center',
+              fontFamily: '-apple-system, system-ui', fontSize: 17,
+              color: sugg, letterSpacing: -0.43, lineHeight: '22px',
+            }}>{w}</div>
+          </React.Fragment>
+        ))}
+      </div>
+      <div style={{
+        display: 'flex', flexDirection: 'column', gap: 13,
+        padding: '0 6.5px', width: '100%', boxSizing: 'border-box',
+        position: 'relative',
+      }}>
+        {row(['q','w','e','r','t','y','u','i','o','p'])}
+        {row(['a','s','d','f','g','h','j','k','l'], 20)}
+        <div style={{ display: 'flex', gap: 14.25, alignItems: 'center' }}>
+          {key(icons.shift, { w: 45, k: 'shift' })}
+          <div style={{ display: 'flex', gap: 6.5, flex: 1 }}>
+            {['z','x','c','v','b','n','m'].map(l => key(l, { flex: true, k: l }))}
+          </div>
+          {key(icons.del, { w: 45, k: 'del' })}
+        </div>
+        <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
+          {key('ABC', { w: 92.25, fs: 18, k: 'abc' })}
+          {key('', { flex: true, k: 'space' })}
+          {key(icons.ret, { w: 92.25, ret: true, k: 'ret' })}
+        </div>
+      </div>
+      <div style={{ height: 56, width: '100%', position: 'relative' }} />
+    </div>
+  );
+}
+
+Object.assign(window, {
+  IOSDevice, IOSStatusBar, IOSNavBar, IOSGlassPill, IOSList, IOSListRow, IOSKeyboard,
+});
+</script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #0a0a12;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: -apple-system, 'PingFang SC', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  /* Material Design (Android) motion — emphasized easing */
+  .md-fade-through {
+    animation: mdFadeThrough 280ms cubic-bezier(0.2, 0, 0, 1.0) both;
+    height: 100%; width: 100%;
+  }
+  @keyframes mdFadeThrough {
+    0%   { opacity: 0; transform: scale(0.92); }
+    35%  { opacity: 0; }
+    100% { opacity: 1; transform: scale(1); }
+  }
+  .md-shared-z-forward {
+    animation: mdSharedZForward 300ms cubic-bezier(0.05, 0.7, 0.1, 1.0) both;
+    height: 100%; width: 100%;
+  }
+  @keyframes mdSharedZForward {
+    from { opacity: 0; transform: scale(0.80); }
+    to   { opacity: 1; transform: scale(1); }
+  }
+  .md-shared-x {
+    animation: mdSharedX 300ms cubic-bezier(0.2, 0, 0, 1.0) both;
+    height: 100%; width: 100%;
+  }
+  @keyframes mdSharedX {
+    from { opacity: 0; transform: translateX(30px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+  ::-webkit-scrollbar { display: none; }
+
+  /* Tweaks panel */
+  #tweaks-panel {
+    display: none;
+    position: fixed; bottom: 24px; right: 24px; z-index: 9999;
+    background: rgba(20,20,32,0.95);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 16px; padding: 20px; width: 240px;
+    color: #fff; font-size: 13px; backdrop-filter: blur(20px);
+  }
+  #tweaks-panel h4 { font-size: 15px; font-weight: 600; margin-bottom: 14px; color: #e8e0ff; }
+  #tweaks-panel label { display: block; margin-bottom: 10px; color: rgba(255,255,255,0.7); font-size: 12px; }
+  #tweaks-panel select, #tweaks-panel input[type=range] {
+    width: 100%; margin-top: 4px; background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.15); border-radius: 6px;
+    color: #fff; padding: 4px 8px; font-size: 12px;
+  }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<div id="tweaks-panel">
+  <h4>Tweaks</h4>
+  <label>配色方案
+    <select id="tw-theme" onchange="applyTweak()">
+      <option value="indigo">靛蓝 · 默认</option>
+      <option value="forest">深林绿</option>
+      <option value="rose">玫瑰暮色</option>
+    </select>
+  </label>
+  <label>用户画像
+    <select id="tw-persona" onchange="applyTweak()">
+      <option value="C">C · 数据好奇型</option>
+      <option value="A">A · 手机依赖型</option>
+      <option value="B">B · 环境困扰型</option>
+    </select>
+  </label>
+  <label>睡眠评分
+    <input type="range" id="tw-score" min="40" max="100" value="78" oninput="applyTweak()"/>
+    <span id="tw-score-val">78</span>
+  </label>
+</div>
+
+<script>
+  const THEMES = {
+    indigo: { accent: '#7c6ef2', accentSoft: 'rgba(124,110,242,0.18)', bg: '#0f0f1e', card: '#1a1a2e', sub: '#252540' },
+    forest: { accent: '#4eb87a', accentSoft: 'rgba(78,184,122,0.18)', bg: '#0d1a14', card: '#162110', sub: '#1e2e1e' },
+    rose:   { accent: '#d97070', accentSoft: 'rgba(217,112,112,0.18)', bg: '#1a0f14', card: '#261520', sub: '#321c28' },
+  };
+  let currentTheme = THEMES.indigo;
+
+  function applyTweak() {
+    const t = document.getElementById('tw-theme').value;
+    currentTheme = THEMES[t];
+    const score = +document.getElementById('tw-score').value;
+    document.getElementById('tw-score-val').textContent = score;
+    window.__tweakState = { theme: currentTheme, score, persona: document.getElementById('tw-persona').value };
+    window.dispatchEvent(new CustomEvent('tweakChange', { detail: window.__tweakState }));
+    window.parent.postMessage({ type:'__edit_mode_set_keys', edits:{ theme:t, score, persona: document.getElementById('tw-persona').value } }, '*');
+  }
+
+  window.addEventListener('message', e => {
+    if (e.data?.type === '__activate_edit_mode') { document.getElementById('tweaks-panel').style.display = 'block'; }
+    if (e.data?.type === '__deactivate_edit_mode') { document.getElementById('tweaks-panel').style.display = 'none'; }
+  });
+  window.parent.postMessage({ type:'__edit_mode_available' }, '*');
+  window.__tweakState = { theme: currentTheme, score: 78, persona: 'C' };
+</script>
+
+<script type="text/babel">
+const { useState, useEffect, useRef, useCallback } = React;
+
+// ── Color tokens ──────────────────────────────────────────────
+function useTheme() {
+  const [theme, setTheme] = useState(window.__tweakState?.theme || THEMES.indigo);
+  useEffect(() => {
+    const h = e => setTheme(e.detail.theme);
+    window.addEventListener('tweakChange', h);
+    return () => window.removeEventListener('tweakChange', h);
+  }, []);
+  return theme;
+}
+
+// ── iOS Navigation Bar ────────────────────────────────────────
+function IOSNavHeader({ title, backLabel = '返回', onBack, rightLabel, onRight, bgColor = '#0f0f1e' }) {
+  const BLUE = '#3478f6';
+  return (
+    <div style={{ position:'absolute', top:0, left:0, right:0, zIndex:30, paddingTop:60, background:bgColor }}>
+      <div style={{ height:44, display:'flex', alignItems:'center', justifyContent:'center', position:'relative', paddingLeft:8, paddingRight:8 }}>
+        {onBack && (
+          <button onClick={onBack} style={{
+            position:'absolute', left:8, top:0, bottom:0,
+            display:'flex', alignItems:'center', gap:3,
+            background:'transparent', border:'none', cursor:'pointer',
+            color:BLUE, fontFamily:'-apple-system,"PingFang SC",system-ui',
+            fontSize:17, fontWeight:400, padding:'0 8px',
+            whiteSpace:'nowrap', WebkitTapHighlightColor:'transparent',
+          }}
+            onMouseDown={e=>e.currentTarget.style.opacity='0.5'}
+            onMouseUp={e=>e.currentTarget.style.opacity='1'}
+            onTouchStart={e=>e.currentTarget.style.opacity='0.5'}
+            onTouchEnd={e=>e.currentTarget.style.opacity='1'}
+          >
+            <svg width="11" height="19" viewBox="0 0 11 19" fill="none">
+              <path d="M9.5 1.5L1.5 9.5l8 8" stroke={BLUE} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+            <span>{backLabel}</span>
+          </button>
+        )}
+        <span style={{ color:'#fff', fontSize:17, fontWeight:600, fontFamily:'-apple-system,"PingFang SC",system-ui', letterSpacing:-0.4, maxWidth:'55%', textAlign:'center', overflow:'hidden', whiteSpace:'nowrap', textOverflow:'ellipsis' }}>{title}</span>
+        {rightLabel && (
+          <button onClick={onRight} style={{ position:'absolute', right:16, top:0, bottom:0, background:'transparent', border:'none', cursor:'pointer', color:BLUE, fontSize:17, fontWeight:400, fontFamily:'-apple-system,"PingFang SC",system-ui', padding:'0 4px', whiteSpace:'nowrap' }}>{rightLabel}</button>
+        )}
+      </div>
+      <div style={{ height:0.5, background:'rgba(255,255,255,0.1)' }}/>
+    </div>
+  );
+}
+
+// ── Tab Bar ───────────────────────────────────────────────────
+function TabBar({ tab, setTab }) {
+  const theme = useTheme();
+  const tabs = [
+    { id:'home', label:'今日', icon:(active)=>(
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <path d="M3 12L12 3l9 9" stroke={active?theme.accent:'rgba(255,255,255,0.3)'} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+        <path d="M5 10v9a1 1 0 001 1h4v-4h4v4h4a1 1 0 001-1v-9" stroke={active?theme.accent:'rgba(255,255,255,0.3)'} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+      </svg>
+    )},
+    { id:'week', label:'周报', icon:(active)=>(
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <rect x="3" y="12" width="3.5" height="8" rx="1" fill={active?theme.accent:'rgba(255,255,255,0.3)'}/>
+        <rect x="8.5" y="8" width="3.5" height="12" rx="1" fill={active?theme.accent:'rgba(255,255,255,0.3)'}/>
+        <rect x="14" y="5" width="3.5" height="15" rx="1" fill={active?theme.accent:'rgba(255,255,255,0.3)'}/>
+        <rect x="19.5" y="9" width="1.5" height="11" rx="0.75" fill="none"/>
+      </svg>
+    )},
+    { id:'guide', label:'引导', icon:(active)=>(
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <circle cx="12" cy="12" r="9" stroke={active?theme.accent:'rgba(255,255,255,0.3)'} strokeWidth="1.8"/>
+        <path d="M12 8v4l3 3" stroke={active?theme.accent:'rgba(255,255,255,0.3)'} strokeWidth="1.8" strokeLinecap="round"/>
+      </svg>
+    )},
+  ];
+  return (
+    <div style={{
+      position:'absolute', bottom:0, left:0, right:0, zIndex:50,
+      background:theme.card, borderTop:'0.5px solid rgba(255,255,255,0.1)',
+      paddingBottom:20, paddingTop:6,
+      display:'flex', alignItems:'flex-start', justifyContent:'space-around',
+    }}>
+      {tabs.map(t => (
+        <button key={t.id} onClick={()=>setTab(t.id)} style={{
+          flex:1, display:'flex', flexDirection:'column', alignItems:'center', gap:3,
+          background:'transparent', border:'none', cursor:'pointer', padding:'4px 0',
+          WebkitTapHighlightColor:'transparent',
+        }}>
+          {t.icon(tab===t.id)}
+          <span style={{ fontSize:10, color:tab===t.id?theme.accent:'rgba(255,255,255,0.3)', fontFamily:'-apple-system,"PingFang SC",system-ui', fontWeight:tab===t.id?600:400 }}>{t.label}</span>
+        </button>
+      ))}
+    </div>
+  );
+}
+
+// ── Shared components ─────────────────────────────────────────
+function Btn({ children, onClick, variant='primary', style={} }) {
+  const theme = useTheme();
+  const base = {
+    display:'block', width:'100%', padding:'15px 0', borderRadius:14,
+    border:'none', cursor:'pointer', fontSize:17, fontWeight:600,
+    fontFamily:'-apple-system,"PingFang SC",system-ui',
+    transition:'opacity 0.15s', WebkitTapHighlightColor:'transparent',
+    ...style,
+  };
+  if (variant==='primary') return (
+    <button onClick={onClick} style={{ ...base, background:theme.accent, color:'#fff' }}
+      onMouseDown={e=>e.currentTarget.style.opacity='0.8'}
+      onMouseUp={e=>e.currentTarget.style.opacity='1'}
+      onTouchStart={e=>e.currentTarget.style.opacity='0.8'}
+      onTouchEnd={e=>e.currentTarget.style.opacity='1'}
+    >{children}</button>
+  );
+  if (variant==='ghost') return (
+    <button onClick={onClick} style={{ ...base, background:'transparent', color:'rgba(255,255,255,0.5)', fontSize:15 }}>{children}</button>
+  );
+  if (variant==='outline') return (
+    <button onClick={onClick} style={{ ...base, background:'rgba(255,255,255,0.06)', color:'rgba(255,255,255,0.9)', border:'1px solid rgba(255,255,255,0.12)' }}>{children}</button>
+  );
+}
+
+function Tag({ children, color }) {
+  return <span style={{ fontSize:11, fontWeight:600, padding:'3px 8px', borderRadius:20, background:color+'22', color, letterSpacing:0.5 }}>{children}</span>;
+}
+
+// ── Screens ───────────────────────────────────────────────────
+
+// 1. ONBOARDING
+function OnboardingScreen({ onDone }) {
+  const theme = useTheme();
+  const [step, setStep] = useState(0);
+  const slides = [
+    {
+      icon: '🌙',
+      title: '你的手表\n记录了数据',
+      sub: '每天早上，智能手表默默记录了你整晚的睡眠。但那些数字，你真的看懂了吗？',
+      tag: '睡阈',
+      tagColor: theme.accent,
+    },
+    {
+      icon: '📊',
+      title: '我来告诉你\n它们意味着什么',
+      sub: '深睡 1h 22min 是多是少？睡眠评分 71 是及格还是差？睡阈把数据变成你能读懂的语言。',
+      tag: '解读',
+      tagColor: '#4eb87a',
+    },
+    {
+      icon: '💡',
+      title: '今天就能做的\n一条建议',
+      sub: '不是泛泛的"少刷手机"，而是基于你昨晚的数据，告诉你今晚从几点开始放下手机。',
+      tag: '行动',
+      tagColor: '#e8a84a',
+    },
+  ];
+  const s = slides[step];
+  return (
+    <div style={{ height:'100%', background:theme.bg, display:'flex', flexDirection:'column', padding:'0 0 88px' }}>
+      <div style={{ flex:1, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', padding:'0 32px', textAlign:'center' }}>
+        <div style={{ fontSize:72, marginBottom:28, lineHeight:1 }}>{s.icon}</div>
+        <Tag children={s.tag} color={s.tagColor}/>
+        <h1 style={{ marginTop:16, fontSize:28, fontWeight:700, color:'#fff', lineHeight:1.3, whiteSpace:'pre-line' }}>{s.title}</h1>
+        <p style={{ marginTop:16, fontSize:15, color:'rgba(255,255,255,0.55)', lineHeight:1.6 }}>{s.sub}</p>
+      </div>
+      {/* dots */}
+      <div style={{ display:'flex', justifyContent:'center', gap:8, marginBottom:28 }}>
+        {slides.map((_,i) => (
+          <div key={i} onClick={()=>setStep(i)} style={{ width:i===step?22:7, height:7, borderRadius:4, background:i===step?theme.accent:'rgba(255,255,255,0.2)', transition:'all 0.3s', cursor:'pointer' }}/>
+        ))}
+      </div>
+      <div style={{ padding:'0 24px' }}>
+        {step < 2
+          ? <Btn onClick={()=>setStep(step+1)}>继续</Btn>
+          : <Btn onClick={onDone}>开始使用</Btn>
+        }
+        <Btn variant="ghost" onClick={onDone} style={{ visibility: step<2 ? 'visible' : 'hidden' }}>跳过</Btn>
+      </div>
+    </div>
+  );
+}
+
+// 2. DEVICE SELECTION
+function DeviceScreen({ onDone }) {
+  const theme = useTheme();
+  const [selected, setSelected] = useState(null);
+  const [authed, setAuthed] = useState(false);
+  const devices = [
+    { id:'apple', name:'Apple 健康', sub:'iPhone · Apple Watch', icon:'🍎' },
+    { id:'mi', name:'小米运动健康', sub:'小米手环 · Redmi Watch', icon:'🟠' },
+    { id:'huawei', name:'华为运动健康', sub:'华为手环 · Watch GT', icon:'🔷' },
+    { id:'manual', name:'手动录入', sub:'没有智能手表', icon:'✏️' },
+  ];
+  if (authed) return (
+    <div style={{ height:'100%', background:theme.bg, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', padding:32, textAlign:'center' }}>
+      <div style={{ fontSize:64, marginBottom:20 }}>✅</div>
+      <h2 style={{ color:'#fff', fontSize:22, fontWeight:700 }}>授权成功</h2>
+      <p style={{ color:'rgba(255,255,255,0.5)', fontSize:14, marginTop:8, lineHeight:1.6 }}>正在同步昨晚的数据…<br/>通常在 2 秒内完成</p>
+      <div style={{ marginTop:32, width:'100%' }}>
+        <Btn onClick={onDone}>查看我的第一份解读</Btn>
+      </div>
+    </div>
+  );
+  return (
+    <div style={{ height:'100%', background:theme.bg, display:'flex', flexDirection:'column', padding:'64px 0 88px' }}>
+      <div style={{ padding:'0 24px', marginBottom:8 }}>
+        <p style={{ color:theme.accent, fontSize:13, fontWeight:600, letterSpacing:0.5, marginBottom:8 }}>第一步</p>
+        <h2 style={{ color:'#fff', fontSize:24, fontWeight:700, lineHeight:1.3 }}>选择你的手表品牌</h2>
+        <p style={{ color:'rgba(255,255,255,0.45)', fontSize:14, marginTop:8 }}>授权一次，每天自动同步</p>
+      </div>
+      <div style={{ flex:1, padding:'16px 24px', display:'flex', flexDirection:'column', gap:10 }}>
+        {devices.map(d => (
+          <div key={d.id} onClick={()=>setSelected(d.id)}
+            style={{ padding:'16px', borderRadius:14, background:selected===d.id?theme.accentSoft:theme.card,
+              border:`1.5px solid ${selected===d.id?theme.accent:'transparent'}`, cursor:'pointer', transition:'all 0.2s',
+              display:'flex', alignItems:'center', gap:14 }}>
+            <span style={{ fontSize:28 }}>{d.icon}</span>
+            <div style={{ flex:1 }}>
+              <div style={{ color:'#fff', fontWeight:600, fontSize:16 }}>{d.name}</div>
+              <div style={{ color:'rgba(255,255,255,0.4)', fontSize:13, marginTop:2 }}>{d.sub}</div>
+            </div>
+            {selected===d.id && <span style={{ color:theme.accent, fontSize:20 }}>✓</span>}
+          </div>
+        ))}
+      </div>
+      <div style={{ padding:'0 24px' }}>
+        <Btn onClick={()=>selected&&setAuthed(true)} style={{ opacity:selected?1:0.4 }}>授权并同步数据</Btn>
+        <p style={{ color:'rgba(255,255,255,0.25)', fontSize:11, textAlign:'center', marginTop:10 }}>数据仅存储于本设备，不会上传服务器</p>
+      </div>
+    </div>
+  );
+}
+
+// 3. HOME SCREEN
+const PERSONA_DATA = {
+  A: { score:62, totalH:6, totalM:8, deepH:0, deepM:55, eff:79, wakeUps:3, sleepTime:'01:37', verdict:'昨晚睡得一般', sub:'入睡有点晚，深睡偏少', suggestion:'你最近入睡都在凌晨 1 点之后，今晚试试 12:30 把手机放进抽屉。', suggType:'手机干预', color:'#e8a84a', emoji:'📱' },
+  B: { score:55, totalH:6, totalM:42, deepH:0, deepM:48, eff:81, wakeUps:5, sleepTime:'23:58', verdict:'昨晚没睡好', sub:'夜里醒得比较多', suggestion:'你夜里醒了 5 次，集中在凌晨 1-3 点。今晚试试硅胶耳塞，明早看看醒来次数有没有减少。', suggType:'环境排查', color:'#70a8d9', emoji:'🔇' },
+  C: { score:78, totalH:7, totalM:32, deepH:1, deepM:12, eff:84, wakeUps:2, sleepTime:'23:31', verdict:'昨晚睡得还不错', sub:'但深睡时间偏少', suggestion:'你昨晚深睡占比 16%，稍低于理想值。你这周深睡最好的一天是周三——那天你 11 点前就睡了。今晚试试 11:15 上床。', suggType:'睡眠节律', color:'#4eb87a', emoji:'📊' },
+};
+
+function HomeScreen({ onDetail, onSugg, onWeek, persona, score }) {
+  const theme = useTheme();
+  const [twScore, setTwScore] = useState(score);
+  const [twPersona, setTwPersona] = useState(persona);
+  useEffect(()=>{
+    const h = e => { setTwScore(e.detail.score); setTwPersona(e.detail.persona); };
+    window.addEventListener('tweakChange', h);
+    return ()=>window.removeEventListener('tweakChange', h);
+  },[]);
+
+  const d = { ...PERSONA_DATA[twPersona], score: twScore };
+  const scoreColor = twScore >= 80 ? '#4eb87a' : twScore >= 65 ? '#e8a84a' : '#d97070';
+
+  const ring = (pct, color, size=50) => {
+    const r = (size-7)/2; const circ = 2*Math.PI*r;
+    return (
+      <svg width={size} height={size} style={{ transform:'rotate(-90deg)' }}>
+        <circle cx={size/2} cy={size/2} r={r} fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth={5}/>
+        <circle cx={size/2} cy={size/2} r={r} fill="none" stroke={color} strokeWidth={5}
+          strokeDasharray={circ} strokeDashoffset={circ*(1-pct/100)} strokeLinecap="round"/>
+      </svg>
+    );
+  };
+
+  return (
+    <div style={{ height:'100%', background:theme.bg, overflow:'hidden', display:'flex', flexDirection:'column', paddingTop:60, paddingBottom:68 }}>
+      {/* Header */}
+      <div style={{ padding:'12px 20px 10px', display:'flex', justifyContent:'space-between', alignItems:'center' }}>
+        <div>
+          <p style={{ color:'rgba(255,255,255,0.35)', fontSize:12 }}>2026年4月20日 周一</p>
+          <h1 style={{ color:'#fff', fontSize:22, fontWeight:700, marginTop:2 }}>早上好 👋</h1>
+        </div>
+        <div style={{ display:'flex', alignItems:'center', gap:8, background:'rgba(255,255,255,0.07)', borderRadius:20, padding:'6px 12px' }}>
+          <span style={{ fontSize:14 }}>🔥</span>
+          <span style={{ color:'rgba(255,255,255,0.7)', fontSize:13, fontWeight:500 }}>连续 5 天</span>
+        </div>
+      </div>
+
+      {/* Main card */}
+      <div onClick={onDetail} style={{ margin:'0 12px', background:`linear-gradient(135deg,${theme.card},${theme.sub})`,
+        borderRadius:18, padding:'16px 18px', cursor:'pointer', border:'1px solid rgba(255,255,255,0.06)', transition:'opacity 0.15s', flexShrink:0 }}
+        onMouseDown={e=>e.currentTarget.style.opacity='0.85'} onMouseUp={e=>e.currentTarget.style.opacity='1'}
+        onTouchStart={e=>e.currentTarget.style.opacity='0.85'} onTouchEnd={e=>e.currentTarget.style.opacity='1'}>
+        <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center' }}>
+          <div>
+            <p style={{ color:'rgba(255,255,255,0.35)', fontSize:11 }}>昨晚 · 4月19日</p>
+            <h2 style={{ color:'#fff', fontSize:20, fontWeight:700, marginTop:4, lineHeight:1.2 }}>{d.verdict}</h2>
+            <p style={{ color:scoreColor, fontSize:13, marginTop:3, fontWeight:500 }}>{d.sub}</p>
+          </div>
+          <div style={{ display:'flex', alignItems:'center', justifyContent:'center', position:'relative', flexShrink:0 }}>
+            {ring(twScore, scoreColor)}
+            <span style={{ position:'absolute', fontSize:14, fontWeight:700, color:scoreColor }}>{twScore}</span>
+          </div>
+        </div>
+        <div style={{ display:'flex', marginTop:12, background:'rgba(255,255,255,0.05)', borderRadius:12, overflow:'hidden' }}>
+          {[
+            { label:'总时长', val:`${d.totalH}h ${d.totalM}m`, icon:'💤' },
+            { label:'深睡', val:`${d.deepH}h ${d.deepM}m`, icon:'⚡' },
+            { label:'效率', val:`${d.eff}%`, icon:'📈' },
+          ].map((item,i) => (
+            <div key={i} style={{ flex:1, padding:'10px 0', textAlign:'center', borderRight:i<2?'1px solid rgba(255,255,255,0.06)':'none' }}>
+              <div style={{ color:'#fff', fontSize:15, fontWeight:700 }}>{item.val}</div>
+              <div style={{ color:'rgba(255,255,255,0.35)', fontSize:10, marginTop:2 }}>{item.icon} {item.label}</div>
+            </div>
+          ))}
+        </div>
+        <div style={{ marginTop:8, textAlign:'right' }}>
+          <span style={{ color:'rgba(255,255,255,0.25)', fontSize:11 }}>查看详情 ›</span>
+        </div>
+      </div>
+
+      {/* Suggestion card */}
+      <div onClick={onSugg} style={{ margin:'10px 12px 0', background:theme.card,
+        borderRadius:18, padding:'14px 16px', cursor:'pointer', border:`1px solid ${d.color}28`,
+        transition:'opacity 0.15s', flexShrink:0 }}
+        onMouseDown={e=>e.currentTarget.style.opacity='0.85'} onMouseUp={e=>e.currentTarget.style.opacity='1'}
+        onTouchStart={e=>e.currentTarget.style.opacity='0.85'} onTouchEnd={e=>e.currentTarget.style.opacity='1'}>
+        <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:8 }}>
+          <div style={{ width:28, height:28, borderRadius:8, background:d.color+'22', display:'flex', alignItems:'center', justifyContent:'center', fontSize:14 }}>{d.emoji}</div>
+          <span style={{ color:d.color, fontSize:12, fontWeight:600 }}>今日建议 · {d.suggType}</span>
+        </div>
+        <p style={{ color:'rgba(255,255,255,0.82)', fontSize:13, lineHeight:1.6,
+          display:'-webkit-box', WebkitLineClamp:2, WebkitBoxOrient:'vertical', overflow:'hidden' }}>{d.suggestion}</p>
+        <div style={{ display:'flex', gap:8, marginTop:12 }}>
+          <button style={{ flex:1, padding:'9px 0', borderRadius:9, border:'none', background:d.color, color:'#fff', fontSize:13, fontWeight:600, cursor:'pointer', fontFamily:'inherit' }}>今晚试试</button>
+          <button style={{ flex:1, padding:'9px 0', borderRadius:9, border:`1px solid rgba(255,255,255,0.12)`, background:'transparent', color:'rgba(255,255,255,0.5)', fontSize:13, cursor:'pointer', fontFamily:'inherit' }}>做不到</button>
+        </div>
+      </div>
+
+      {/* Bottom row */}
+      <div style={{ margin:'10px 12px 0', display:'flex', gap:10, height:130 }}>
+        <div onClick={onWeek} style={{ flex:1, background:theme.card, borderRadius:16, padding:'12px 14px', cursor:'pointer', border:'1px solid rgba(255,255,255,0.05)', display:'flex', flexDirection:'column', justifyContent:'space-between', overflow:'hidden' }}>
+          <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center' }}>
+            <span style={{ color:'rgba(255,255,255,0.4)', fontSize:11, fontWeight:500 }}>本周睡眠</span>
+            <span style={{ color:theme.accent, fontSize:10 }}>↑ +4分</span>
+          </div>
+          <MiniChart theme={theme} />
+          <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center' }}>
+            <span style={{ color:'rgba(255,255,255,0.55)', fontSize:12, fontWeight:600 }}>均 {Math.round([65,72,58,78,82,61,78].reduce((a,b)=>a+b)/7)} 分</span>
+            <span style={{ color:theme.accent, fontSize:10, fontWeight:500 }}>周报 ›</span>
+          </div>
+        </div>
+        <div style={{ flex:1, background:theme.card, borderRadius:16, padding:'12px 14px', border:'1px solid rgba(255,255,255,0.05)', display:'flex', flexDirection:'column', justifyContent:'space-between' }}>
+          <span style={{ color:'rgba(255,255,255,0.4)', fontSize:11, fontWeight:500 }}>今日状态</span>
+          <div style={{ display:'flex', alignItems:'center', gap:8 }}>
+            <span style={{ fontSize:28, lineHeight:1 }}>{twScore>=75?'😊':twScore>=60?'😐':'😴'}</span>
+            <span style={{ color:'rgba(255,255,255,0.8)', fontSize:13, fontWeight:600 }}>{twScore>=75?'精神好':twScore>=60?'一般':'偏疲惫'}</span>
+          </div>
+          <div style={{ display:'flex', flexDirection:'column', gap:3 }}>
+            <span style={{ color:'rgba(255,255,255,0.4)', fontSize:10 }}>☕ 咖啡因截止 14:00</span>
+            <span style={{ color:'rgba(255,255,255,0.4)', fontSize:10 }}>{twScore<70?'💤 午休 20 分钟':'🎯 今晚目标 23:15'}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function MiniChart({ theme }) {
+  const vals = [65,72,58,78,82,61,78];
+  const days = ['一','二','三','四','五','六','日'];
+  const max = Math.max(...vals);
+  return (
+    <div style={{ display:'flex', alignItems:'flex-end', gap:3, marginTop:10, height:36 }}>
+      {vals.map((v,i) => (
+        <div key={i} style={{ flex:1, display:'flex', flexDirection:'column', alignItems:'center', gap:2 }}>
+          <div style={{ width:'100%', borderRadius:3, background: i===6?theme.accent:'rgba(255,255,255,0.15)', height: `${(v/max)*30}px` }}/>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+// 4. DETAIL SCREEN (sleep data)
+function DetailScreen({ onBack, persona }) {
+  const theme = useTheme();
+  const [twPersona, setTwPersona] = useState(persona);
+  useEffect(()=>{
+    const h = e => setTwPersona(e.detail.persona);
+    window.addEventListener('tweakChange', h);
+    return ()=>window.removeEventListener('tweakChange', h);
+  },[]);
+  const d = PERSONA_DATA[twPersona];
+
+  const stages = [
+    { label:'清醒', pct:5, color:'#d97070', time:'22m' },
+    { label:'浅睡', pct:55, color:'#7c8ef2', time:`${Math.floor(d.totalH*60+d.totalM)*0.55|0}m` },
+    { label:'深睡', pct:18, color:'#4eb87a', time:`${d.deepH*60+d.deepM}m` },
+    { label:'REM', pct:22, color:'#e8a84a', time:'1h 34m' },
+  ];
+
+  // 7-day deep sleep bars
+  const week = [52,68,45,71,82,55,d.deepM];
+  const days7 = ['周一','周二','周三','周四','周五','周六','周日'];
+  const maxW = Math.max(...week);
+
+  return (
+    <div style={{ height:'100%', background:theme.bg, overflow:'hidden', position:'relative', display:'flex', flexDirection:'column', paddingTop:116, paddingBottom:34 }}>
+      <IOSNavHeader title="睡眠详情" backLabel="首页" onBack={onBack} bgColor={theme.bg}/>
+
+      {/* Sleep arch */}
+      <div style={{ margin:'0 12px', background:theme.card, borderRadius:18, padding:'14px 16px', border:'1px solid rgba(255,255,255,0.06)', flexShrink:0 }}>
+        <p style={{ color:'rgba(255,255,255,0.4)', fontSize:11, marginBottom:10 }}>昨晚睡眠阶段</p>
+        <SleepArch theme={theme} />
+        <div style={{ display:'flex', gap:10, flexWrap:'wrap', marginTop:10 }}>
+          {stages.map(s => (
+            <div key={s.label} style={{ display:'flex', alignItems:'center', gap:4 }}>
+              <div style={{ width:7, height:7, borderRadius:2, background:s.color }}/>
+              <span style={{ color:'rgba(255,255,255,0.5)', fontSize:11 }}>{s.label} {s.time}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* 7-day deep sleep */}
+      <div style={{ margin:'10px 12px 0', background:theme.card, borderRadius:18, padding:'14px 16px', border:'1px solid rgba(255,255,255,0.06)', flex:1, minHeight:0 }}>
+        <div style={{ display:'flex', justifyContent:'space-between', marginBottom:10 }}>
+          <p style={{ color:'rgba(255,255,255,0.4)', fontSize:11 }}>深睡时长 · 近7天</p>
+          <p style={{ color:'rgba(255,255,255,0.2)', fontSize:11 }}>理想 60–120 分钟</p>
+        </div>
+        {week.map((v,i) => (
+          <div key={i} style={{ display:'flex', alignItems:'center', gap:8, marginBottom:6 }}>
+            <span style={{ color:'rgba(255,255,255,0.35)', fontSize:11, width:26 }}>{days7[i]}</span>
+            <div style={{ flex:1, background:'rgba(255,255,255,0.06)', borderRadius:5, height:16, overflow:'hidden' }}>
+              <div style={{ height:'100%', borderRadius:5, background:i===6?theme.accent:'rgba(124,110,242,0.45)', width:`${(v/maxW)*100}%`, transition:'width 0.6s', display:'flex', alignItems:'center', paddingLeft:6 }}>
+                <span style={{ color:'rgba(255,255,255,0.8)', fontSize:10, fontWeight:600 }}>{v}m</span>
+              </div>
+            </div>
+            {v < 60 && <span style={{ color:'#d97070', fontSize:10 }}>↓</span>}
+            {v >= 80 && <span style={{ color:'#4eb87a', fontSize:10 }}>✓</span>}
+          </div>
+        ))}
+        {/* key stats inline */}
+        <div style={{ display:'flex', gap:10, marginTop:10, paddingTop:10, borderTop:'1px solid rgba(255,255,255,0.06)' }}>
+          {[
+            { label:'入睡时间', val:d.sleepTime, note:'建议 23:00 前' },
+            { label:'夜间觉醒', val:`${d.wakeUps}次`, note:d.wakeUps>3?'偏多':'正常' },
+          ].map(item => (
+            <div key={item.label} style={{ flex:1, display:'flex', alignItems:'center', gap:10 }}>
+              <div style={{ color:'#fff', fontSize:18, fontWeight:700 }}>{item.val}</div>
+              <div>
+                <div style={{ color:'rgba(255,255,255,0.5)', fontSize:11 }}>{item.label}</div>
+                <div style={{ color:'rgba(255,255,255,0.3)', fontSize:10 }}>{item.note}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function SleepArch({ theme }) {
+  // simplified SVG arch showing sleep stages
+  const segs = [
+    {from:0,to:0.03,y:10,color:'#d97070'},// awake
+    {from:0.03,to:0.12,y:40,color:'#7c8ef2'},
+    {from:0.12,to:0.22,y:70,color:'#4eb87a'},
+    {from:0.22,to:0.35,y:40,color:'#7c8ef2'},
+    {from:0.35,to:0.42,y:70,color:'#4eb87a'},
+    {from:0.42,to:0.55,y:40,color:'#7c8ef2'},
+    {from:0.55,to:0.62,y:20,color:'#e8a84a'},// rem
+    {from:0.62,to:0.72,y:40,color:'#7c8ef2'},
+    {from:0.72,to:0.78,y:70,color:'#4eb87a'},
+    {from:0.78,to:0.88,y:40,color:'#7c8ef2'},
+    {from:0.88,to:0.95,y:20,color:'#e8a84a'},
+    {from:0.95,to:1.0,y:10,color:'#d97070'},
+  ];
+  const W=300, H=90;
+  const points = segs.map(s=>`${s.from*W},${s.y}`).join(' ') + ` ${W},${segs[segs.length-1].y}`;
+  return (
+    <svg width="100%" viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" style={{ display:'block' }}>
+      {segs.map((s,i)=>(
+        <rect key={i} x={s.from*W} y={s.y-4} width={(s.to-s.from)*W} height={H-s.y+4}
+          fill={s.color} opacity={0.7} rx={i===0||i===segs.length-1?0:3}/>
+      ))}
+      {/* time labels */}
+      {['23:00','01:00','03:00','05:00','07:00'].map((t,i)=>(
+        <text key={t} x={i*W/4} y={H-2} fill="rgba(255,255,255,0.25)" fontSize={9} fontFamily="-apple-system,system-ui">{t}</text>
+      ))}
+    </svg>
+  );
+}
+
+// 5. SUGGESTION DETAIL
+function SuggestionScreen({ onBack, onConfirm, persona }) {
+  const theme = useTheme();
+  const [twPersona, setTwPersona] = useState(persona);
+  const [done, setDone] = useState(false);
+  useEffect(()=>{
+    const h = e => setTwPersona(e.detail.persona);
+    window.addEventListener('tweakChange', h);
+    return ()=>window.removeEventListener('tweakChange', h);
+  },[]);
+  const d = PERSONA_DATA[twPersona];
+
+  if (done) return (
+    <div style={{ height:'100%', background:theme.bg, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', padding:32, textAlign:'center' }}>
+      <div style={{ fontSize:56, marginBottom:16 }}>🎯</div>
+      <h2 style={{ color:'#fff', fontSize:20, fontWeight:700 }}>太好了！</h2>
+      <p style={{ color:'rgba(255,255,255,0.5)', fontSize:14, marginTop:8, lineHeight:1.7 }}>明天早上我会对比今晚和昨晚的数据，告诉你建议是否有效。</p>
+      <div style={{ marginTop:32, width:'100%' }}>
+        <Btn onClick={onBack}>返回首页</Btn>
+      </div>
+    </div>
+  );
+
+  return (
+    <div style={{ height:'100%', background:theme.bg, overflow:'hidden', position:'relative', display:'flex', flexDirection:'column', paddingTop:116, paddingBottom:172 }}>
+      <IOSNavHeader title="今日建议" backLabel="首页" onBack={onBack} bgColor={theme.bg}/>
+
+      {/* Suggestion hero */}
+      <div style={{ margin:'0 12px', background:`linear-gradient(135deg,${d.color}18,${d.color}08)`, borderRadius:18, padding:'12px 14px', border:`1px solid ${d.color}30`, flexShrink:0 }}>
+        <div style={{ display:'flex', alignItems:'center', gap:10, marginBottom:8 }}>
+          <span style={{ fontSize:22 }}>{d.emoji}</span>
+          <Tag children={d.suggType} color={d.color}/>
+        </div>
+        <p style={{ color:'rgba(255,255,255,0.9)', fontSize:13, lineHeight:1.55, fontWeight:500,
+          display:'-webkit-box', WebkitLineClamp:3, WebkitBoxOrient:'vertical', overflow:'hidden' }}>{d.suggestion}</p>
+      </div>
+
+      {/* Why */}
+      <div style={{ margin:'8px 12px 0', background:theme.card, borderRadius:18, padding:'11px 14px', border:'1px solid rgba(255,255,255,0.05)', flexShrink:0 }}>
+        <h3 style={{ color:'rgba(255,255,255,0.45)', fontSize:11, fontWeight:600, letterSpacing:0.5, marginBottom:6 }}>为什么这样建议</h3>
+        <p style={{ color:'rgba(255,255,255,0.7)', fontSize:12, lineHeight:1.6 }}>
+          {twPersona==='A' && '放下手机超过 30 分钟再入睡的那几天，深睡平均多出 40 分钟。建议基于你个人的数据规律。'}
+          {twPersona==='B' && '觉醒集中在凌晨 1-3 点（宿舍噪音高峰）。硅胶耳塞比泡棉隔音更稳定，适合轻度睡眠者。'}
+          {twPersona==='C' && '你深睡最好的几天都是 11 点前入睡的，相关性明显。提前上床是改善深睡的最直接手段。'}
+        </p>
+      </div>
+
+      {/* Steps */}
+      <div style={{ margin:'8px 12px 0', background:theme.card, borderRadius:18, padding:'11px 14px', border:'1px solid rgba(255,255,255,0.05)', flex:1, minHeight:0 }}>
+        <h3 style={{ color:'rgba(255,255,255,0.45)', fontSize:11, fontWeight:600, letterSpacing:0.5, marginBottom:8 }}>执行步骤</h3>
+        {(twPersona==='A'?['今晚 12:25 设置手机提醒','把手机放到床头柜另一侧','忍不住时拿一本书替代']:
+          twPersona==='B'?['购买 3M 1270 硅胶耳塞','睡前戴上，调整至舒适角度','观察 3 天记录觉醒次数']:
+          ['今晚 11:10 开始准备睡觉','提前调暗手机屏幕亮度','只需提前上床，无需强迫入睡']
+        ).map((step,i)=>(
+          <div key={i} style={{ display:'flex', alignItems:'center', gap:10, marginBottom:8 }}>
+            <div style={{ width:20, height:20, borderRadius:10, background:d.color+'33', color:d.color, fontSize:11, fontWeight:700, display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>{i+1}</div>
+            <span style={{ color:'rgba(255,255,255,0.75)', fontSize:13, whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' }}>{step}</span>
+          </div>
+        ))}
+      </div>
+
+      {/* Buttons — absolutely pinned to bottom */}
+      <div style={{ position:'absolute', bottom:34, left:0, right:0, padding:'0 12px', background:theme.bg }}>
+        <Btn onClick={()=>setDone(true)}>今晚试试</Btn>
+        <Btn variant="outline" style={{ marginTop:6 }} onClick={onBack}>做不到，换一条建议</Btn>
+        <p style={{ color:'rgba(255,255,255,0.18)', fontSize:10, textAlign:'center', marginTop:6 }}>建议基于设备数据生成，仅供参考，不构成医疗建议</p>
+      </div>
+    </div>
+  );
+}
+
+// 6. WEEKLY REPORT
+function WeekScreen() {
+  const theme = useTheme();
+  const scores = [65,72,58,78,82,61,78];
+  const days = ['周一','周二','周三','周四','周五','周六','周日'];
+  const avg = Math.round(scores.reduce((a,b)=>a+b)/scores.length);
+  return (
+    <div style={{ height:'100%', background:theme.bg, overflow:'hidden', position:'relative', display:'flex', flexDirection:'column', paddingTop:60, paddingBottom:68 }}>
+      <div style={{ padding:'12px 20px 10px' }}>
+        <p style={{ color:'rgba(255,255,255,0.35)', fontSize:12 }}>4月14日 — 4月20日</p>
+        <h1 style={{ color:'#fff', fontSize:22, fontWeight:700, marginTop:2 }}>本周周报</h1>
+      </div>
+
+      {/* Score summary */}
+      <div style={{ margin:'0 12px', background:theme.card, borderRadius:18, padding:'14px 16px', border:'1px solid rgba(255,255,255,0.06)', flexShrink:0 }}>
+        <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:14 }}>
+          <div>
+            <p style={{ color:'rgba(255,255,255,0.35)', fontSize:11 }}>4月14日 — 4月20日</p>
+            <div style={{ display:'flex', alignItems:'baseline', gap:5, marginTop:4 }}>
+              <span style={{ color:'#fff', fontSize:32, fontWeight:700 }}>{avg}</span>
+              <span style={{ color:'rgba(255,255,255,0.35)', fontSize:13 }}>/ 100</span>
+              <span style={{ color:theme.accent, fontSize:12, marginLeft:4 }}>+4 📈</span>
+            </div>
+          </div>
+          <div style={{ textAlign:'right' }}>
+            <div style={{ color:'rgba(255,255,255,0.35)', fontSize:11 }}>平均时长</div>
+            <div style={{ color:'#fff', fontSize:16, fontWeight:700, marginTop:2 }}>7h 04m</div>
+            <div style={{ color:'#4eb87a', fontSize:12, fontWeight:600, marginTop:4 }}>最佳 周五 82分</div>
+          </div>
+        </div>
+        {/* Bar chart */}
+        <div style={{ display:'flex', alignItems:'flex-end', gap:5, height:72 }}>
+          {scores.map((s,i) => {
+            const c = s>=80?'#4eb87a':s>=65?theme.accent:'#d97070';
+            return (
+              <div key={i} style={{ flex:1, display:'flex', flexDirection:'column', alignItems:'center', gap:3 }}>
+                <span style={{ color:c, fontSize:9, fontWeight:600 }}>{s}</span>
+                <div style={{ width:'100%', borderRadius:4, background:c, height:`${(s/100)*52}px`, transition:'height 0.6s' }}/>
+                <span style={{ color:'rgba(255,255,255,0.3)', fontSize:9 }}>{days[i].slice(1)}</span>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Insights */}
+      <div style={{ margin:'10px 12px 0', background:theme.card, borderRadius:18, padding:'14px 16px', border:'1px solid rgba(255,255,255,0.05)', flexShrink:0 }}>
+        <h3 style={{ color:'rgba(255,255,255,0.45)', fontSize:12, fontWeight:600, letterSpacing:0.5, marginBottom:10 }}>本周洞察</h3>
+        {[
+          { icon:'🏆', text:'周五最好，那天你 11 点前就上床了。', color:'#4eb87a' },
+          { icon:'⚠️', text:'周三最差（58分），凌晨 1:52 才入睡。', color:'#d97070' },
+          { icon:'💡', text:'入睡每提前 30 分钟，深睡平均多 18 分钟。', color:'#e8a84a' },
+        ].map((ins,i)=>(
+          <div key={i} style={{ display:'flex', gap:10, marginBottom:i<2?9:0 }}>
+            <span style={{ fontSize:15, flexShrink:0 }}>{ins.icon}</span>
+            <p style={{ color:'rgba(255,255,255,0.7)', fontSize:13, lineHeight:1.55 }}>{ins.text}</p>
+          </div>
+        ))}
+      </div>
+
+      {/* Next week goal */}
+      <div style={{ margin:'10px 12px 0', background:`linear-gradient(135deg,${theme.accentSoft},transparent)`, borderRadius:18, padding:'14px 16px', border:`1px solid ${theme.accent}30`, flexShrink:0 }}>
+        <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:8 }}>
+          <h3 style={{ color:theme.accent, fontSize:12, fontWeight:600, letterSpacing:0.5 }}>下周目标</h3>
+          <span style={{ color:theme.accent, fontSize:11, fontWeight:500 }}>4月21日起 ›</span>
+        </div>
+        <div style={{ display:'flex', justifyContent:'space-between', alignItems:'baseline', marginBottom:4 }}>
+          <p style={{ color:'#fff', fontSize:15, fontWeight:600 }}>平均分达到 75 分</p>
+          <span style={{ color:'rgba(255,255,255,0.5)', fontSize:12 }}>当前 {avg} · +{75-avg}</span>
+        </div>
+        <p style={{ color:'rgba(255,255,255,0.5)', fontSize:12, lineHeight:1.5 }}>每天提前 15 分钟上床就能实现。</p>
+        <div style={{ display:'flex', gap:6, marginTop:10 }}>
+          <div style={{ flex:1, background:'rgba(255,255,255,0.04)', borderRadius:10, padding:'6px 8px' }}>
+            <p style={{ color:'rgba(255,255,255,0.4)', fontSize:10 }}>入睡时间</p>
+            <p style={{ color:'#fff', fontSize:13, fontWeight:600, marginTop:2 }}>23:15 前</p>
+          </div>
+          <div style={{ flex:1, background:'rgba(255,255,255,0.04)', borderRadius:10, padding:'6px 8px' }}>
+            <p style={{ color:'rgba(255,255,255,0.4)', fontSize:10 }}>深睡目标</p>
+            <p style={{ color:'#fff', fontSize:13, fontWeight:600, marginTop:2 }}>≥ 1h 30m</p>
+          </div>
+          <div style={{ flex:1, background:'rgba(255,255,255,0.04)', borderRadius:10, padding:'6px 8px' }}>
+            <p style={{ color:'rgba(255,255,255,0.4)', fontSize:10 }}>咖啡因</p>
+            <p style={{ color:'#fff', fontSize:13, fontWeight:600, marginTop:2 }}>14:00 止</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// 7. EMPTY STATE
+function EmptyScreen({ onBack }) {
+  const theme = useTheme();
+  return (
+    <div style={{ height:'100%', background:theme.bg, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', padding:32, textAlign:'center' }}>
+      <div style={{ fontSize:64, marginBottom:20 }}>🌑</div>
+      <h2 style={{ color:'#fff', fontSize:20, fontWeight:700 }}>昨晚好像没有数据</h2>
+      <p style={{ color:'rgba(255,255,255,0.4)', fontSize:14, marginTop:10, lineHeight:1.7 }}>可能是手表没有佩戴，或者数据还没同步完成。试着手动补录？</p>
+      <div style={{ marginTop:32, width:'100%', display:'flex', flexDirection:'column', gap:10 }}>
+        <Btn onClick={onBack}>手动录入昨晚数据</Btn>
+        <Btn variant="ghost" onClick={onBack}>返回</Btn>
+      </div>
+    </div>
+  );
+}
+
+// 7. GUIDE SCREEN
+function GuideScreen({ onStartOnboarding, onStartDevice }) {
+  const theme = useTheme();
+  const [sub, setSub] = useState(null); // null | 'onboarding' | 'device'
+
+  if (sub === 'onboarding') return <OnboardingScreen onDone={()=>setSub(null)}/>;
+  if (sub === 'device') return <DeviceScreen onDone={()=>setSub(null)}/>;
+
+  const items = [
+    { id:'onboarding', icon:'🌙', title:'产品引导', sub:'重新体验 3 张引导介绍', color:'#7c6ef2' },
+    { id:'device', icon:'⌚', title:'绑定设备', sub:'修改或重新授权手表数据', color:'#4eb87a' },
+  ];
+  return (
+    <div style={{ height:'100%', background:theme.bg, overflow:'hidden', display:'flex', flexDirection:'column', paddingTop:60, paddingBottom:68 }}>
+      <div style={{ padding:'12px 20px 10px' }}>
+        <p style={{ color:'rgba(255,255,255,0.35)', fontSize:12 }}>设置与引导</p>
+        <h1 style={{ color:'#fff', fontSize:22, fontWeight:700, marginTop:2 }}>引导流程</h1>
+      </div>
+
+      {/* Preview cards */}
+      <div style={{ padding:'0 12px', display:'flex', flexDirection:'column', gap:10 }}>
+        {items.map(item => (
+          <div key={item.id} onClick={()=>setSub(item.id)}
+            style={{ background:theme.card, borderRadius:18, padding:'18px 20px', cursor:'pointer',
+              border:`1px solid ${item.color}22`, display:'flex', alignItems:'center', gap:16,
+              transition:'opacity 0.15s' }}
+            onMouseDown={e=>e.currentTarget.style.opacity='0.8'}
+            onMouseUp={e=>e.currentTarget.style.opacity='1'}
+            onTouchStart={e=>e.currentTarget.style.opacity='0.8'}
+            onTouchEnd={e=>e.currentTarget.style.opacity='1'}
+          >
+            <div style={{ width:46, height:46, borderRadius:14, background:item.color+'22', display:'flex', alignItems:'center', justifyContent:'center', fontSize:22, flexShrink:0 }}>{item.icon}</div>
+            <div style={{ flex:1 }}>
+              <div style={{ color:'#fff', fontSize:16, fontWeight:600 }}>{item.title}</div>
+              <div style={{ color:'rgba(255,255,255,0.4)', fontSize:13, marginTop:3 }}>{item.sub}</div>
+            </div>
+            <svg width="8" height="14" viewBox="0 0 8 14" fill="none">
+              <path d="M1 1l6 6-6 6" stroke="rgba(255,255,255,0.25)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </div>
+        ))}
+      </div>
+
+    </div>
+  );
+}
+
+// ── MAIN APP ──────────────────────────────────────────────────
+const SCREENS = ['onboarding','device','home','detail','suggestion','week'];
+
+function App() {
+  const saved = localStorage.getItem('shuiyu_screen') || 'home';
+  const [tab, setTab] = useState(['home','week','guide'].includes(saved) ? saved : 'home');
+  const [overlay, setOverlay] = useState(null); // 'detail' | 'suggestion'
+  const [persona, setPersona] = useState('C');
+  const [score, setScore] = useState(78);
+
+  useEffect(()=>{ localStorage.setItem('shuiyu_screen', tab); },[tab]);
+
+  useEffect(()=>{
+    const h = e => { setPersona(e.detail.persona); setScore(e.detail.score); };
+    window.addEventListener('tweakChange', h);
+    return ()=>window.removeEventListener('tweakChange', h);
+  },[]);
+
+  return (
+    <IOSDevice dark width={390} height={844}>
+      <div style={{ height:'100%', position:'relative' }}>
+        {/* Tab content — Material fade-through on tab switch */}
+        {!overlay && (
+          <div key={tab} className="md-fade-through">
+            {tab==='home'  && <HomeScreen onDetail={()=>setOverlay('detail')} onSugg={()=>setOverlay('suggestion')} onWeek={()=>setTab('week')} persona={persona} score={score}/>}
+            {tab==='week'  && <WeekScreen onBack={()=>setTab('home')}/>}
+            {tab==='guide' && <GuideScreen onStartOnboarding={()=>{}} onStartDevice={()=>{}}/>}
+          </div>
+        )}
+
+        {/* Overlays — Material shared Z-axis on forward push */}
+        {overlay && (
+          <div key={overlay} className="md-shared-z-forward" style={{ position:'absolute', inset:0 }}>
+            {overlay==='detail'     && <DetailScreen onBack={()=>setOverlay(null)} persona={persona}/>}
+            {overlay==='suggestion' && <SuggestionScreen onBack={()=>setOverlay(null)} onConfirm={()=>setOverlay(null)} persona={persona}/>}
+          </div>
+        )}
+
+        {/* Tab bar — hidden when overlay is active */}
+        {!overlay && <TabBar tab={tab} setTab={setTab}/>}
+      </div>
+    </IOSDevice>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>
